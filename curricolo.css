@@ -1,0 +1,27 @@
+.navegador{
+    background-color: rgb(79, 98, 134);
+    font-family: Arial, Helvetica, sans-serif;
+    color: whitesmoke;
+}
+.home{
+    border: 1px solid rgb(79, 98, 134);
+    padding: 55px 10px;
+    padding-bottom: 0px;
+}
+.home:hover{
+    background-color:white;
+    
+}
+.footer{
+    position: relative;
+  font-size: 12px;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  font-size: 14px;
+  background-color: white;
+  color: black;
+  text-align: center;
+
+}

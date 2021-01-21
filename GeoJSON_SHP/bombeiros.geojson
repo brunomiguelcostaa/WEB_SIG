@@ -1,0 +1,2 @@
+var bombeiros = {"type":"FeatureCollection",
+"features":[{"type":"Feature","id":1,"geometry":{"type":"Point","coordinates":[-8.3784259037016469,41.27898473006416]},"properties":{"OBJECTID":1,"Classe":"Bombeiros_Pacos_Ferreira"}},{"type":"Feature","id":2,"geometry":{"type":"Point","coordinates":[-8.3443667257649263,41.286515740180036]},"properties":{"OBJECTID":2,"Classe":"Bombeiros_Freamunde"}}]}

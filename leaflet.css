@@ -1,0 +1,26 @@
+.home{
+    border: 1px solid rgb(79, 98, 134);
+    padding: 55px 10px;
+    padding-bottom: 0px;
+}
+.home:hover{
+    background-color:white;
+    
+}
+.tit{
+    float: right;
+    padding-right: 500px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.navegador{
+    background-color: rgb(79, 98, 134);
+    font-family: Arial, Helvetica, sans-serif;
+    color: whitesmoke;
+}
+#map{
+    margin-top: 100px;
+    height: auto;
+    width: auto;
+    border: solid 1px white;
+
+}

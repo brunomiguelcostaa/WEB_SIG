@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type= "text/css" href="leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+      <!-- Load Esri Leaflet from CDN -->
+      <script src="https://unpkg.com/esri-leaflet@2.5.1/dist/esri-leaflet.js"
+      integrity="sha512-q7X96AASUF0hol5Ih7AeZpRF6smJS55lcvy+GLWzJfZN+31/BQ8cgNx2FGF+IQSA4z2jHwB20vml+drmooqzzQ=="
+      crossorigin=""></script>
+        <!-- Include Leaflet.heat from CDN -->
+        <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+        <!-- Load Heatmap Feature Layer from CDN -->
+        <script src="https://unpkg.com/esri-leaflet-heatmap@2.0.0"></script>
+            <!-- Heatmap Feature Layer -->
+        <script src="https://unpkg.com/esri-leaflet-heatmap@2.0.0/dist/esri-leaflet-heatmap.js"
+        integrity="sha512-fSJJRfO4PK90PN9jKKBzBZmzlNRsR12QA/CqTTWgfUTfLMF1Nrx5ouOqlpzC8LQIP+Qz0/G4BlHSgxHrCLHuMA=="
+        crossorigin=""></script>
+<style>
+        #map {position: absolute; top:0; bottom: 0; left: 0; right: 0;}
+    </style>
+    <script src="GeoJSON_SHP/Rede_Escolar.geojson"></script>
+    <script src="GeoJSON_SHP/Pacos_de_Ferreira.geojson"></script>
+    <script src="GeoJSON_SHP/rede_administrativajf.geojson"></script>
+    <script src="GeoJSON_SHP/GNR.geojson"></script>
+    <script src="GeoJSON_SHP/bombeiros.geojson"></script>
+    <script src="img/school.svg"></script>
+    <script src="img/administration.svg"></script>
+    <script src="img/police.svg"></script>
+    <script src="img/bombeiro.svg"></script>
+
+</head>
+<body>
+    <!-- Include Leaflet.heat from CDN -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+    <!-- Load Heatmap Feature Layer from CDN -->
+    <script src="https://unpkg.com/esri-leaflet-heatmap@2.0.0"></script>
+    <div class="navegador">
+            <a class="home" href="index.html"><img src="jpeg/home.png" alt="---imagem em falta---" height="70" width="70"></a> 
+            <h1 class="tit">GeoPortal dos Serviços Públicos do Município de Paços de Ferreira  </h1>
+    </div>
+    <div id = "map">
+
+    </div>
+    <script>
+        var map = L.map('map').setView([41.29,-8.38], 13);
+
+    // Setup the mouse coordinate display
+            var coordDIV = document.createElement('div');
+            coordDIV.id = 'mapCoordDIV';
+            coordDIV.style.position = 'absolute';
+            coordDIV.style.bottom = '1px';
+            coordDIV.style.left = '150px';
+            coordDIV.style.zIndex = '900';
+            coordDIV.style.color = '#404040';
+            coordDIV.style.fontFamily = 'Calibri';
+            coordDIV.style.fontSize = '10pt';
+            coordDIV.style.fontWeight = 'bold';
+            coordDIV.style.backgroundColor = '#fff';
+            coordDIV.style.opacity = '0.6';
+
+
+            document.getElementById('map').appendChild(coordDIV);
+
+        // Setup the event to capture and display mouse movements
+            map.on('mousemove', function(e){
+                var lat = e.latlng.lat.toFixed(3);
+                var lon = e.latlng.lng.toFixed(3);
+                document.getElementById('mapCoordDIV').innerHTML = 'Coordenadas: ' + lat + ' , ' + lon;
+                });
+
+//------------------------------mapa base--------
+
+
+
+                L.tileLayer('https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=SdIQygtsbMoEBFM15JKL').addTo(map);
+//-----------------------outros mapas-----------------------
+
+        var mapa_principal = L.tileLayer('https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=SdIQygtsbMoEBFM15JKL', {
+                        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+                    });
+        var black_map = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+});
+
+        var orto = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+//--------------------------------CAOP-------------
+        var pacos_de_ferreira_layer = L.geoJSON(pacos_de_ferreira, {color: 'yellow', weight:1,fillOpacity:0.10});
+        pacos_de_ferreira_layer.eachLayer(function (layer) {
+        layer.bindPopup("<h4>Freguesia: </h4>"+layer.feature.properties.Freguesia);
+});
+
+        pacos_de_ferreira_layer.addTo(map);
+//--------------------------------------rede escolar---------------------------------------                        
+        var escola_symbol = 'img/school.svg';
+        var rede_escolar_symb = L.icon({
+            iconUrl: escola_symbol,
+            iconSize: [20, 20]
+
+        });
+        var rede_escolar_pfr = L.geoJSON(rede_escolar, {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {
+                    icon: rede_escolar_symb}); 
+                },
+                onEachFeature: function(feature, layer){
+                    var Nivel = feature.properties.Nivel;
+                    layer.bindPopup("<h4>Escola:</h4>" + Nivel);
+                }}).addTo(map);
+//----------------------------------------------rede_administrativa------------------------------
+        var admin_symbol = 'img/administration.svg';
+        var rede_admin_symb = L.icon({
+            iconUrl: admin_symbol,
+            iconSize: [20, 20]
+                        
+        });
+        var rede_administrativajf_layer = L.geoJSON(rede_administrativajf, {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {
+                    icon: rede_admin_symb}); 
+                },
+                onEachFeature: function(feature, layer){
+                    var Nivel = feature.properties.Nivel;
+                    layer.bindPopup("<h4>Tipo de Administração: </h4>" + Nivel);
+                }}).addTo(map);
+//------------------------------------------GNR---------------------------------------------------
+        var police_symbol = 'img/police.svg';
+        var gnr_symb = L.icon({
+            iconUrl: police_symbol,
+            iconSize: [20, 20]
+                        
+        });
+        var gnr_layer = L.geoJSON(GNR, {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {
+                    icon: gnr_symb}); 
+                },
+                onEachFeature: function(feature, layer){
+                    var Nivel = feature.properties.Classe;
+                    layer.bindPopup("<h4>Segurança Pública: </h4>" + Nivel);
+                }}).addTo(map);
+//------------------------------------------Bombeiros-------------------------------------------------
+
+        var bombeiros_symbol = 'img/bombeiro.svg';
+        var bombeiros_symb = L.icon({
+            iconUrl: bombeiros_symbol,
+            iconSize: [20, 20]
+                        
+        });
+        var bombeiros_layer = L.geoJSON(bombeiros, {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {
+                    icon: bombeiros_symb}); 
+                },
+                onEachFeature: function(feature, layer){
+                    var Nivel = feature.properties.Classe;
+                    layer.bindPopup("<h4>Segurança Pública: </h4>" + Nivel);
+                }}).addTo(map);
+
+
+//------------------------------------mapa de calor--------------------------------------
+
+        var mapa_calor = L.esri.Heat.featureLayer({
+            url: 'https://services5.arcgis.com/AMh9EzyFGgthLT1q/ArcGIS/rest/services/RE/FeatureServer/0',
+            radius: 25,
+            fillOpacity: 1,
+        });
+        mapa_calor.addTo(map);
+
+
+//--------------------------legenda-------
+
+//--------------------------------legenda--------------------------------------
+
+        var mapas = {
+            'Mapa Claro': mapa_principal,
+            'Mapa Escuro':black_map,
+            'Ortofotomapa':orto,
+        };
+
+        //on_off------
+        var camadas = {
+            'Rede Escolar': rede_escolar_pfr,
+            'Rede Administrativa':rede_administrativajf_layer,
+            'GNR': gnr_layer,
+            'Bombeiros':bombeiros_layer,
+            'Mapa de Calor': mapa_calor,
+            'Paços de Ferreira':pacos_de_ferreira_layer,
+        };
+
+        L.control.layers(mapas,camadas).addTo(map);
+
+        //escala
+        L.control.scale().addTo(map);
+
+
+
+    </script>
+</body>
+</html>
